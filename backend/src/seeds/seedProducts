@@ -1,0 +1,408 @@
+import mongoose from 'mongoose';
+import Product from '../models/Product';
+
+const sampleProducts = [
+  // ============ IPHONES ============
+  {
+    name: 'iPhone 15 Pro Max',
+    brand: 'Apple',
+    category: 'phone',
+    model: 'iPhone 15 Pro Max',
+    price: { current: 119900, original: 119900, currency: 'INR' },
+    specifications: {
+      display: { size: 6.7, resolution: '2796 x 1290', type: 'Super Retina XDR OLED', refreshRate: 120, brightness: '2000 nits' },
+      processor: { chipset: 'Apple A17 Pro', cores: 6, speed: '3.78 GHz', gpu: '6-core GPU' },
+      memory: { ram: 8, storage: 256, storageType: 'NVMe' },
+      battery: { capacity: 4422, charging: 'USB-C', fastCharging: 30, wirelessCharging: true },
+      camera: { rear: { main: 48, ultraWide: 12, telephoto: 12 }, front: 12 },
+      connectivity: { '5g': true, '4g': true, wifi: 'Wi-Fi 6E', bluetooth: '5.3', usb: 'USB-C 3.0', nfc: true },
+      build: { material: 'Titanium', weight: 221, dimensions: { height: 159.9, width: 76.7, thickness: 8.25 } },
+      os: 'iOS 17',
+      features: ['Dynamic Island', 'ProMotion', 'Always-On Display']
+    },
+    ratings: { overall: 4.8, performance: 4.9, battery: 4.5, display: 4.9, camera: 4.8, value: 4.3, count: 2456 },
+    images: ['https://images.unsplash.com/photo-1695048133142-1a20484d2569?w=600'],
+    availability: { inStock: true, amazon: { available: true, url: 'https://amazon.in', price: 119900 }, flipkart: { available: true, url: 'https://flipkart.com', price: 119900 } },
+    pros: ['Excellent camera system', 'Titanium build', 'Powerful processor'],
+    cons: ['Expensive', 'Heavy', 'No charger included'],
+    tags: ['premium', 'flagship', 'camera', 'ios'],
+    slug: 'iphone-15-pro-max'
+  },
+  {
+    name: 'iPhone 15',
+    brand: 'Apple',
+    category: 'phone',
+    model: 'iPhone 15',
+    price: { current: 74999, original: 79900, currency: 'INR' },
+    specifications: {
+      display: { size: 6.1, resolution: '2556 x 1179', type: 'Super Retina XDR OLED', refreshRate: 60, brightness: '2000 nits' },
+      processor: { chipset: 'Apple A16 Bionic', cores: 6, speed: '3.46 GHz', gpu: '5-core GPU' },
+      memory: { ram: 6, storage: 128, storageType: 'NVMe' },
+      battery: { capacity: 3349, charging: 'USB-C', fastCharging: 30, wirelessCharging: true },
+      camera: { rear: { main: 48, ultraWide: 12 }, front: 12 },
+      connectivity: { '5g': true, '4g': true, wifi: 'Wi-Fi 6', bluetooth: '5.3', usb: 'USB-C 2.0', nfc: true },
+      build: { material: 'Aluminum', weight: 171, dimensions: { height: 147.6, width: 71.6, thickness: 7.8 } },
+      os: 'iOS 17',
+      features: ['Dynamic Island', '48MP Camera', 'USB-C']
+    },
+    ratings: { overall: 4.6, performance: 4.7, battery: 4.4, display: 4.6, camera: 4.6, value: 4.5, count: 3245 },
+    images: ['https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?w=600'],
+    availability: { inStock: true, amazon: { available: true, url: 'https://amazon.in', price: 74999 }, flipkart: { available: true, url: 'https://flipkart.com', price: 73999 } },
+    pros: ['Great value for iPhone', '48MP camera', 'USB-C finally'],
+    cons: ['60Hz display', 'No always-on display'],
+    tags: ['iphone', 'flagship', 'ios', 'value'],
+    slug: 'iphone-15'
+  },
+  {
+    name: 'iPhone 14',
+    brand: 'Apple',
+    category: 'phone',
+    model: 'iPhone 14',
+    price: { current: 54999, original: 69900, currency: 'INR' },
+    specifications: {
+      display: { size: 6.1, resolution: '2532 x 1170', type: 'Super Retina XDR OLED', refreshRate: 60, brightness: '1200 nits' },
+      processor: { chipset: 'Apple A15 Bionic', cores: 6, speed: '3.23 GHz', gpu: '5-core GPU' },
+      memory: { ram: 6, storage: 128, storageType: 'NVMe' },
+      battery: { capacity: 3279, charging: 'Lightning', fastCharging: 30, wirelessCharging: true },
+      camera: { rear: { main: 12, ultraWide: 12 }, front: 12 },
+      connectivity: { '5g': true, '4g': true, wifi: 'Wi-Fi 6', bluetooth: '5.3', usb: 'Lightning', nfc: true },
+      build: { material: 'Aluminum', weight: 172, dimensions: { height: 146.7, width: 71.5, thickness: 7.8 } },
+      os: 'iOS 17',
+      features: ['Crash Detection', 'Photonic Engine']
+    },
+    ratings: { overall: 4.5, performance: 4.6, battery: 4.2, display: 4.5, camera: 4.4, value: 4.6, count: 4521 },
+    images: ['https://images.unsplash.com/photo-1663492169067-7085142d8c7c?w=600'],
+    availability: { inStock: true, amazon: { available: true, url: 'https://amazon.in', price: 54999 }, flipkart: { available: true, url: 'https://flipkart.com', price: 53999 } },
+    pros: ['Great performance', 'Good camera', 'Now affordable'],
+    cons: ['Older design', '60Hz display', 'Lightning port'],
+    tags: ['iphone', 'ios', 'value', 'popular'],
+    slug: 'iphone-14'
+  },
+  // ============ SAMSUNG ============
+  {
+    name: 'Samsung Galaxy S24 Ultra',
+    brand: 'Samsung',
+    category: 'phone',
+    model: 'Galaxy S24 Ultra',
+    price: { current: 99999, original: 109999, currency: 'INR' },
+    specifications: {
+      display: { size: 6.8, resolution: '3088 x 1440', type: 'Dynamic AMOLED 2X', refreshRate: 120, brightness: '2600 nits' },
+      processor: { chipset: 'Snapdragon 8 Gen 3', cores: 8, speed: '3.4 GHz', gpu: 'Adreno 750' },
+      memory: { ram: 12, storage: 256, storageType: 'UFS 4.0' },
+      battery: { capacity: 5000, charging: 'USB-C', fastCharging: 45, wirelessCharging: true },
+      camera: { rear: { main: 200, ultraWide: 12, telephoto: 50 }, front: 12 },
+      connectivity: { '5g': true, '4g': true, wifi: 'Wi-Fi 7', bluetooth: '5.3', usb: 'USB-C 3.2', nfc: true },
+      build: { material: 'Titanium', weight: 232, dimensions: { height: 162.3, width: 79, thickness: 8.6 } },
+      os: 'Android 14',
+      features: ['S Pen', 'Galaxy AI', 'Circle to Search']
+    },
+    ratings: { overall: 4.7, performance: 4.8, battery: 4.6, display: 4.9, camera: 4.7, value: 4.4, count: 1876 },
+    images: ['https://images.unsplash.com/photo-1610945265078-385f4e266929?w=600'],
+    availability: { inStock: true, flipkart: { available: true, url: 'https://flipkart.com', price: 99999 }, amazon: { available: true, url: 'https://amazon.in', price: 99999 } },
+    pros: ['Amazing 200MP camera', 'S Pen included', 'Excellent display'],
+    cons: ['Expensive', 'Large size', 'Average battery life'],
+    tags: ['premium', 'flagship', 'android', 'camera', 'spen'],
+    slug: 'samsung-galaxy-s24-ultra'
+  },
+  {
+    name: 'Samsung Galaxy S24',
+    brand: 'Samsung',
+    category: 'phone',
+    model: 'Galaxy S24',
+    price: { current: 64999, original: 74999, currency: 'INR' },
+    specifications: {
+      display: { size: 6.2, resolution: '2340 x 1080', type: 'Dynamic AMOLED 2X', refreshRate: 120, brightness: '2600 nits' },
+      processor: { chipset: 'Snapdragon 8 Gen 3', cores: 8, speed: '3.4 GHz', gpu: 'Adreno 750' },
+      memory: { ram: 8, storage: 128, storageType: 'UFS 4.0' },
+      battery: { capacity: 4000, charging: 'USB-C', fastCharging: 25, wirelessCharging: true },
+      camera: { rear: { main: 50, ultraWide: 12, telephoto: 10 }, front: 12 },
+      connectivity: { '5g': true, '4g': true, wifi: 'Wi-Fi 7', bluetooth: '5.3', usb: 'USB-C 3.2', nfc: true },
+      build: { material: 'Aluminum', weight: 167, dimensions: { height: 147, width: 70.6, thickness: 7.6 } },
+      os: 'Android 14',
+      features: ['Galaxy AI', 'Circle to Search', 'Compact']
+    },
+    ratings: { overall: 4.5, performance: 4.7, battery: 4.3, display: 4.7, camera: 4.4, value: 4.5, count: 1234 },
+    images: ['https://images.unsplash.com/photo-1610945265078-385f4e266929?w=600'],
+    availability: { inStock: true, flipkart: { available: true, url: 'https://flipkart.com', price: 64999 }, amazon: { available: true, url: 'https://amazon.in', price: 63999 } },
+    pros: ['Compact flagship', 'Powerful processor', 'AI features'],
+    cons: ['Small battery', 'Base storage only 128GB'],
+    tags: ['flagship', 'android', 'ai', 'compact'],
+    slug: 'samsung-galaxy-s24'
+  },
+  {
+    name: 'Samsung Galaxy A54 5G',
+    brand: 'Samsung',
+    category: 'phone',
+    model: 'Galaxy A54 5G',
+    price: { current: 30999, original: 38999, currency: 'INR' },
+    specifications: {
+      display: { size: 6.4, resolution: '2340 x 1080', type: 'Super AMOLED', refreshRate: 120, brightness: '1000 nits' },
+      processor: { chipset: 'Exynos 1380', cores: 8, speed: '2.4 GHz', gpu: 'Mali-G68 MP5' },
+      memory: { ram: 8, storage: 128, storageType: 'UFS' },
+      battery: { capacity: 5000, charging: 'USB-C', fastCharging: 25, wirelessCharging: false },
+      camera: { rear: { main: 50, ultraWide: 12, macro: 5 }, front: 32 },
+      connectivity: { '5g': true, '4g': true, wifi: 'Wi-Fi 6', bluetooth: '5.3', usb: 'USB-C 2.0', nfc: true },
+      build: { material: 'Gorilla Glass 5', weight: 202, dimensions: { height: 158.2, width: 76.7, thickness: 8.2 } },
+      os: 'Android 14',
+      features: ['IP67 Water Resistant', '4 Years OS Updates']
+    },
+    ratings: { overall: 4.3, performance: 4.2, battery: 4.4, display: 4.5, camera: 4.2, value: 4.5, count: 3456 },
+    images: ['https://images.unsplash.com/photo-1610945265078-385f4e266929?w=600'],
+    availability: { inStock: true, flipkart: { available: true, url: 'https://flipkart.com', price: 30999 }, amazon: { available: true, url: 'https://amazon.in', price: 29999 } },
+    pros: ['Great display', 'Good battery life', 'IP67 rating'],
+    cons: ['Exynos processor', 'Slow charging'],
+    tags: ['mid-range', '5g', 'android', 'popular'],
+    slug: 'samsung-galaxy-a54-5g'
+  },
+  {
+    name: 'Samsung Galaxy M54 5G',
+    brand: 'Samsung',
+    category: 'phone',
+    model: 'Galaxy M54 5G',
+    price: { current: 27999, original: 32999, currency: 'INR' },
+    specifications: {
+      display: { size: 6.7, resolution: '2400 x 1080', type: 'Super AMOLED Plus', refreshRate: 120, brightness: '800 nits' },
+      processor: { chipset: 'Dimensity 1080', cores: 8, speed: '2.6 GHz', gpu: 'Mali-G68 MC4' },
+      memory: { ram: 8, storage: 128, storageType: 'UFS' },
+      battery: { capacity: 6000, charging: 'USB-C', fastCharging: 25, wirelessCharging: false },
+      camera: { rear: { main: 108, ultraWide: 8, macro: 2 }, front: 32 },
+      connectivity: { '5g': true, '4g': true, wifi: 'Wi-Fi 6', bluetooth: '5.3', usb: 'USB-C 2.0', nfc: true },
+      build: { material: 'Plastic', weight: 199, dimensions: { height: 164.9, width: 77.3, thickness: 8.4 } },
+      os: 'Android 14',
+      features: ['108MP Camera', 'Monster Shot']
+    },
+    ratings: { overall: 4.2, performance: 4.1, battery: 4.6, display: 4.3, camera: 4.2, value: 4.5, count: 1876 },
+    images: ['https://images.unsplash.com/photo-1610945265078-385f4e266929?w=600'],
+    availability: { inStock: true, flipkart: { available: true, url: 'https://flipkart.com', price: 27999 }, amazon: { available: true, url: 'https://amazon.in', price: 26999 } },
+    pros: ['108MP camera', '6000mAh battery', '120Hz display'],
+    cons: ['Slow charging', 'Average build quality'],
+    tags: ['budget', '5g', 'android', 'battery'],
+    slug: 'samsung-galaxy-m54-5g'
+  },
+  // ============ ONEPLUS ============
+  {
+    name: 'OnePlus 12',
+    brand: 'OnePlus',
+    category: 'phone',
+    model: 'OnePlus 12',
+    price: { current: 64999, original: 69999, currency: 'INR' },
+    specifications: {
+      display: { size: 6.82, resolution: '3168 x 1440', type: 'ProXDR BOE OLED', refreshRate: 120, brightness: '4500 nits' },
+      processor: { chipset: 'Snapdragon 8 Gen 3', cores: 8, speed: '3.3 GHz', gpu: 'Adreno 750' },
+      memory: { ram: 12, storage: 256, storageType: 'UFS 4.0' },
+      battery: { capacity: 5400, charging: 'USB-C', fastCharging: 100, wirelessCharging: true },
+      camera: { rear: { main: 50, ultraWide: 48, telephoto: 64 }, front: 32 },
+      connectivity: { '5g': true, '4g': true, wifi: 'Wi-Fi 7', bluetooth: '5.4', usb: 'USB-C 3.2', nfc: true },
+      build: { material: 'Aluminum', weight: 220, dimensions: { height: 164.3, width: 75.8, thickness: 9.15 } },
+      os: 'OxygenOS 14',
+      features: ['100W charging', 'Hasselblad Camera']
+    },
+    ratings: { overall: 4.6, performance: 4.8, battery: 4.7, display: 4.7, camera: 4.4, value: 4.6, count: 987 },
+    images: ['https://images.unsplash.com/photo-1592899677977-9c10ca588bbd?w=600'],
+    availability: { inStock: true, amazon: { available: true, url: 'https://amazon.in', price: 64999 }, flipkart: { available: true, url: 'https://flipkart.com', price: 63999 } },
+    pros: ['Blazing fast charging', 'Powerful performance', 'Great display'],
+    cons: ['Camera could be better', 'No official IP rating'],
+    tags: ['flagship', 'performance', 'charging', 'android'],
+    slug: 'oneplus-12'
+  },
+  {
+    name: 'OnePlus 12R',
+    brand: 'OnePlus',
+    category: 'phone',
+    model: 'OnePlus 12R',
+    price: { current: 39999, original: 49999, currency: 'INR' },
+    specifications: {
+      display: { size: 6.78, resolution: '2780 x 1264', type: 'Super Fluid AMOLED', refreshRate: 120, brightness: '4500 nits' },
+      processor: { chipset: 'Snapdragon 8 Gen 2', cores: 8, speed: '3.2 GHz', gpu: 'Adreno 740' },
+      memory: { ram: 8, storage: 128, storageType: 'UFS 3.1' },
+      battery: { capacity: 5500, charging: 'USB-C', fastCharging: 100, wirelessCharging: false },
+      camera: { rear: { main: 50, ultraWide: 8, macro: 2 }, front: 16 },
+      connectivity: { '5g': true, '4g': true, wifi: 'Wi-Fi 7', bluetooth: '5.3', usb: 'USB-C 2.0', nfc: true },
+      build: { material: 'Aluminum', weight: 207, dimensions: { height: 163.3, width: 75.3, thickness: 8.8 } },
+      os: 'OxygenOS 14',
+      features: ['100W SUPERVOOC', '5500mAh Battery']
+    },
+    ratings: { overall: 4.4, performance: 4.6, battery: 4.6, display: 4.5, camera: 4.2, value: 4.5, count: 876 },
+    images: ['https://images.unsplash.com/photo-1592899677977-9c10ca588bbd?w=600'],
+    availability: { inStock: true, amazon: { available: true, url: 'https://amazon.in', price: 39999 }, flipkart: { available: true, url: 'https://flipkart.com', price: 38999 } },
+    pros: ['100W charging', 'Huge battery', 'Powerful processor'],
+    cons: ['No wireless charging', 'Average camera'],
+    tags: ['flagship', 'performance', 'charging', 'value'],
+    slug: 'oneplus-12r'
+  },
+  // ============ REALME ============
+  {
+    name: 'Realme GT 6',
+    brand: 'Realme',
+    category: 'phone',
+    model: 'GT 6',
+    price: { current: 42999, original: 49999, currency: 'INR' },
+    specifications: {
+      display: { size: 6.78, resolution: '2780 x 1264', type: 'OLED', refreshRate: 120, brightness: '6000 nits' },
+      processor: { chipset: 'Snapdragon 8s Gen 3', cores: 8, speed: '3.0 GHz', gpu: 'Adreno 735' },
+      memory: { ram: 8, storage: 256, storageType: 'UFS' },
+      battery: { capacity: 5500, charging: 'USB-C', fastCharging: 120, wirelessCharging: false },
+      camera: { rear: { main: 50, ultraWide: 8 }, front: 32 },
+      connectivity: { '5g': true, '4g': true, wifi: 'Wi-Fi 6', bluetooth: '5.3', usb: 'USB-C 2.0', nfc: true },
+      build: { material: 'Glass', weight: 199, dimensions: { height: 162, width: 75, thickness: 8.6 } },
+      os: 'Android 14',
+      features: ['120W Charging', '6000 nits brightness']
+    },
+    ratings: { overall: 4.4, performance: 4.6, battery: 4.5, display: 4.6, camera: 4.2, value: 4.5, count: 654 },
+    images: ['https://images.unsplash.com/photo-1592899677977-9c10ca588bbd?w=600'],
+    availability: { inStock: true, flipkart: { available: true, url: 'https://flipkart.com', price: 42999 }, amazon: { available: true, url: 'https://amazon.in', price: 41999 } },
+    pros: ['120W charging', '6000 nits display', 'Powerful processor'],
+    cons: ['No wireless charging', 'Average camera'],
+    tags: ['flagship', 'performance', 'charging', 'android'],
+    slug: 'realme-gt-6'
+  },
+  // ============ VIVO ============
+  {
+    name: 'Vivo X100 Pro',
+    brand: 'Vivo',
+    category: 'phone',
+    model: 'X100 Pro',
+    price: { current: 89999, original: 99999, currency: 'INR' },
+    specifications: {
+      display: { size: 6.78, resolution: '2800 x 1260', type: 'AMOLED', refreshRate: 120, brightness: '3000 nits' },
+      processor: { chipset: 'Dimensity 9300', cores: 8, speed: '3.25 GHz', gpu: 'Immortalis-G720 MC12' },
+      memory: { ram: 16, storage: 512, storageType: 'UFS' },
+      battery: { capacity: 5400, charging: 'USB-C', fastCharging: 100, wirelessCharging: true },
+      camera: { rear: { main: 50, ultraWide: 50, telephoto: 50 }, front: 32 },
+      connectivity: { '5g': true, '4g': true, wifi: 'Wi-Fi 7', bluetooth: '5.4', usb: 'USB-C 3.2', nfc: true },
+      build: { material: 'Glass', weight: 221, dimensions: { height: 164.1, width: 75.3, thickness: 8.9 } },
+      os: 'Android 14',
+      features: ['Zeiss Camera', '100W Charging', 'IP68']
+    },
+    ratings: { overall: 4.6, performance: 4.7, battery: 4.5, display: 4.6, camera: 4.8, value: 4.2, count: 543 },
+    images: ['https://images.unsplash.com/photo-1592899677977-9c10ca588bbd?w=600'],
+    availability: { inStock: true, flipkart: { available: true, url: 'https://flipkart.com', price: 89999 }, amazon: { available: true, url: 'https://amazon.in', price: 88999 } },
+    pros: ['Excellent Zeiss camera', 'Powerful processor', '100W charging'],
+    cons: ['Expensive', 'Large size'],
+    tags: ['flagship', 'camera', 'android', 'premium'],
+    slug: 'vivo-x100-pro'
+  },
+  // ============ LAPTOPS ============
+  {
+    name: 'MacBook Pro 14" M3 Max',
+    brand: 'Apple',
+    category: 'laptop',
+    model: 'MacBook Pro 14" M3 Max',
+    price: { current: 199900, original: 199900, currency: 'INR' },
+    specifications: {
+      display: { size: 14.2, resolution: '3024 x 1964', type: 'Liquid Retina XDR', refreshRate: 120, brightness: '1600 nits' },
+      processor: { chipset: 'Apple M3 Max', cores: 14, speed: '4.05 GHz' },
+      memory: { ram: 36, storage: 1024, storageType: 'SSD' },
+      battery: { capacity: 70, charging: 'MagSafe 3', fastCharging: 96 },
+      connectivity: { wifi: 'Wi-Fi 6E', bluetooth: '5.3', usb: 'Thunderbolt 5' },
+      build: { material: 'Aluminum', weight: 1.55, dimensions: { height: 1.55, width: 31.26, thickness: 22.12 } },
+      os: 'macOS Sonoma',
+      features: ['ProMotion', 'Studio Quality Mics', 'Spatial Audio']
+    },
+    ratings: { overall: 4.9, performance: 4.9, battery: 4.8, display: 4.9, camera: 4.7, value: 4.5, count: 567 },
+    images: ['https://images.unsplash.com/photo-1517336714731-489689fd1ca4?w=600'],
+    availability: { inStock: true, amazon: { available: true, url: 'https://amazon.in', price: 199900 } },
+    pros: ['Incredible performance', 'Stunning display', 'Amazing battery life'],
+    cons: ['Very expensive', 'Limited ports', 'Not upgradeable'],
+    tags: ['premium', 'professional', 'macos', 'creative'],
+    slug: 'macbook-pro-14-m3-max'
+  },
+  {
+    name: 'Dell XPS 15',
+    brand: 'Dell',
+    category: 'laptop',
+    model: 'XPS 15 9530',
+    price: { current: 149999, original: 169999, currency: 'INR' },
+    specifications: {
+      display: { size: 15.6, resolution: '3456 x 2160', type: 'OLED', refreshRate: 60 },
+      processor: { chipset: 'Intel Core i7-13700H', cores: 14, speed: '5.0 GHz', gpu: 'NVIDIA RTX 4070' },
+      memory: { ram: 32, storage: 1024, storageType: 'NVMe SSD' },
+      battery: { capacity: 86, charging: 'USB-C', fastCharging: 130 },
+      connectivity: { wifi: 'Wi-Fi 6E', bluetooth: '5.3', usb: 'Thunderbolt 4' },
+      build: { material: 'Aluminum', weight: 1.86, dimensions: { height: 1.8, width: 34.4, thickness: 23 } },
+      os: 'Windows 11 Home',
+      features: ['InfinityEdge display', 'Fingerprint Reader', 'Backlit Keyboard']
+    },
+    ratings: { overall: 4.5, performance: 4.7, battery: 4.2, display: 4.8, camera: 4.3, value: 4.2, count: 432 },
+    images: ['https://images.unsplash.com/photo-1531297461136-82lw7f1ebf23?w=600'],
+    availability: { inStock: true, amazon: { available: true, url: 'https://amazon.in', price: 149999 } },
+    pros: ['Beautiful OLED display', 'Powerful performance', 'Premium design'],
+    cons: ['Expensive', 'Average battery', 'Can get hot'],
+    tags: ['premium', 'windows', 'ultrabook', 'creative'],
+    slug: 'dell-xps-15'
+  },
+  {
+    name: 'ASUS ROG Zephyrus G14',
+    brand: 'ASUS',
+    category: 'laptop',
+    model: 'ROG Zephyrus G14',
+    price: { current: 129999, original: 149999, currency: 'INR' },
+    specifications: {
+      display: { size: 14, resolution: '2560 x 1600', type: 'ROG Nebula OLED', refreshRate: 240 },
+      processor: { chipset: 'AMD Ryzen 9 7940HS', cores: 8, speed: '5.2 GHz', gpu: 'NVIDIA RTX 4060' },
+      memory: { ram: 16, storage: 1024, storageType: 'NVMe SSD' },
+      battery: { capacity: 76, charging: 'USB-C', fastCharging: 100 },
+      connectivity: { wifi: 'Wi-Fi 6E', bluetooth: '5.3', usb: 'USB4' },
+      build: { material: 'Magnesium Alloy', weight: 1.72, dimensions: { height: 1.85, width: 31.1, thickness: 22.6 } },
+      os: 'Windows 11 Home',
+      features: ['AniMe Matrix', 'G-Sync', 'Dolby Atmos']
+    },
+    ratings: { overall: 4.6, performance: 4.8, battery: 4.3, display: 4.7, camera: 4.0, value: 4.5, count: 654 },
+    images: ['https://images.unsplash.com/photo-1593642532973-d31b6557fa68?w=600'],
+    availability: { inStock: true, flipkart: { available: true, url: 'https://flipkart.com', price: 129999 }, amazon: { available: true, url: 'https://amazon.in', price: 129999 } },
+    pros: ['Excellent gaming performance', 'Portable', 'Great display'],
+    cons: ['No webcam', 'Expensive', 'LOUD fans'],
+    tags: ['gaming', 'portable', 'amd', 'rtx', 'premium'],
+    slug: 'asus-rog-zephyrus-g14'
+  },
+  {
+    name: 'HP Spectre x360',
+    brand: 'HP',
+    category: 'laptop',
+    model: 'Spectre x360 14',
+    price: { current: 134999, original: 149999, currency: 'INR' },
+    specifications: {
+      display: { size: 13.5, resolution: '3000 x 2000', type: 'OLED Touch', refreshRate: 60 },
+      processor: { chipset: 'Intel Core i7-1365U', cores: 10, speed: '5.2 GHz', gpu: 'Intel Iris Xe' },
+      memory: { ram: 16, storage: 512, storageType: 'NVMe SSD' },
+      battery: { capacity: 66, charging: 'USB-C', fastCharging: 65 },
+      connectivity: { wifi: 'Wi-Fi 6E', bluetooth: '5.3', usb: 'Thunderbolt 4' },
+      build: { material: 'Aluminum', weight: 1.36, dimensions: { height: 1.68, width: 29.8, thickness: 21.5 } },
+      os: 'Windows 11 Home',
+      features: ['2-in-1 Touch', 'Pen Support', 'Fingerprint Reader']
+    },
+    ratings: { overall: 4.4, performance: 4.3, battery: 4.4, display: 4.6, camera: 4.2, value: 4.2, count: 345 },
+    images: ['https://images.unsplash.com/photo-1496181133206-80ce9b88a853?w=600'],
+    availability: { inStock: true, amazon: { available: true, url: 'https://amazon.in', price: 134999 } },
+    pros: ['Beautiful OLED display', 'Premium build', '2-in-1 design'],
+    cons: ['Expensive', 'Average performance', 'Limited ports'],
+    tags: ['premium', 'ultrabook', '2-in-1', 'windows'],
+    slug: 'hp-spectre-x360'
+  }
+];
+
+async function seedProducts() {
+  try {
+    await mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/smartchoice');
+    console.log('Connected to MongoDB');
+
+    await Product.deleteMany({});
+    console.log('Cleared existing products');
+
+    await Product.insertMany(sampleProducts);
+    console.log(`Seeded ${sampleProducts.length} products successfully`);
+
+    const phoneCount = sampleProducts.filter(p => p.category === 'phone').length;
+    const laptopCount = sampleProducts.filter(p => p.category === 'laptop').length;
+    console.log(`   - Phones: ${phoneCount}`);
+    console.log(`   - Laptops: ${laptopCount}`);
+
+    await mongoose.connection.close();
+    console.log('Database connection closed');
+  } catch (error) {
+    console.error('Seed error:', error);
+    process.exit(1);
+  }
+}
+
+seedProducts();

@@ -1,0 +1,36 @@
+# Dependencies
+node_modules
+npm-debug.log
+
+# Build outputs
+dist
+
+# Environment files
+.env
+.env.local
+.env.*.local
+
+# IDE
+.vscode
+.idea
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+logs
+*.log
+
+# Test
+coverage
+.nyc_output
+
+# TypeScript
+*.tsbuildinfo
+
+# Seeds (don't need in production)
+src/seeds
+

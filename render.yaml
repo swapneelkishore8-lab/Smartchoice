@@ -1,0 +1,42 @@
+# Render Blueprint for SmartChoice Application
+# 
+# To deploy:
+# 1. Create a MongoDB database on Render (https://dashboard.render.com/new/mongo-db)
+# 2. Create a Redis cache on Render (https://dashboard.render.com/new/redis)
+# 3. Go to https://dashboard.render.com/blueprints
+# 4. Connect your GitHub repository
+# 5. Update MONGODB_URI and REDIS_URL with your actual values
+
+services:
+  # Backend API Service
+  - name: smartchoice-backend
+    type: web
+    runtime: node
+    region: oregon
+    buildCommand: cd backend && npm install && npm run build
+    startCommand: cd backend && npm run start
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 5000
+      # IMPORTANT: Update these with your actual MongoDB and Redis connection strings
+      - key: MONGODB_URI
+        value: mongodb://localhost:27017/smartchoice
+      - key: JWT_SECRET
+        generateValue: true
+      - key: FRONTEND_URL
+        value: https://smartchoice-frontend.onrender.com
+      - key: REDIS_URL
+        value: redis://localhost:6379
+
+  # Frontend Static Site
+  - name: smartchoice-frontend
+    type: web
+    runtime: static
+    region: oregon
+    buildCommand: cd frontend && npm install && npm run build
+    envVars:
+      - key: REACT_APP_API_URL
+        value: https://smartchoice-backend.onrender.com/api
+
